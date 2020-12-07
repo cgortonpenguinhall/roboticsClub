@@ -12,6 +12,7 @@ RoboClaw roboclaw(&Serial1, 10000);  // pins 18 (TX1) and 19 (RX1) are Serial1.
 #define address 0x80  // this is the first roboclaw connected
 
 void goFwd(int speed) {
+  Serial.println("goFwd");
   roboclaw.ForwardM1(address, speed + 3);  // speed 0-127
   roboclaw.BackwardM2(address, speed);
 }
@@ -27,11 +28,13 @@ void turnRight(int speed) {
 }
 
 void turnLeft(int speed) {
+  Serial.println("turnLeft");
   roboclaw.BackwardM1(address, speed);  // speed 0-127
   roboclaw.BackwardM2(address, speed);
 }
 
 void stop() {
+  Serial.println("Stop");
   roboclaw.ForwardM1(address, 0);
   roboclaw.BackwardM2(address, 0);
 }
@@ -41,7 +44,6 @@ void setup() {
   roboclaw.begin(38400);
   Serial.begin(9600);
 
-  Serial.println("Stop");
   stop();
   delay(1000);
   Serial.println("Starting...");
