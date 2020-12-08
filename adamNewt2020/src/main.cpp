@@ -1,13 +1,12 @@
-// Set Roboclaw to mode 7 option 4
+// Set Roboclaw to mode 7 option 4 (this is packet serial @ 38400 baud)
 // press mode, then use mode or set buttons until 7 blinks, use lipo to save
 // press set, then use mode or set buttons until 4 blinks, use lipo to save
 
-// Includes required to use Roboclaw library
 #include <Arduino.h>
 #include <RoboClaw.h>
 
-RoboClaw roboclaw(&Serial1, 10000);  // pins 18 (TX1) and 19 (RX1) are Serial1.
-                                     // Connect TX1 to S1(RX) and RX1 to S2(TX)
+RoboClaw roboclaw(&Serial1, 10000);  // pin 18 (TX1) and 19 (RX1) are Serial1
+                                     // Connect TX1 to S1(RX) on Roboclaw and RX1 to S2(TX)
 
 #define address 0x80  // this is the first roboclaw connected
 
