@@ -1,7 +1,6 @@
 // Set Roboclaw to mode 7 option 4 (this is packet serial @ 38400 baud)
-// To change mode: press mode, then use mode or set buttons until 7 blinks, use
-// lipo to save To change option: press set, then use mode or set buttons until
-// 4 blinks, use lipo to save
+// To change mode: press mode, then use mode or set buttons until 7 blinks, use lipo to save
+// To change option: press set, then use mode or set buttons until 4 blinks, use lipo to save
 
 // Includes required to use Roboclaw library
 #include <Arduino.h>
@@ -21,12 +20,11 @@ RoboClaw roboclaw(&Serial1, 10000);  // pins 18 (TX1) and 19 (RX1) are Serial1.
 void turnLeft()
 {
   Serial.println("turnLeft");
-  roboclaw.SpeedDistanceM2(address, -400, 990, 1);
+  roboclaw.SpeedDistanceM2(address, 400, 990, 1);
 }
 
 void setup()
 {
-  //Open Serial and roboclaw serial ports
   Serial.begin(115200);
   roboclaw.begin(38400);
 
@@ -34,8 +32,8 @@ void setup()
   roboclaw.SetM1VelocityPID(address, Kd, Kp, Ki, qpps);
   roboclaw.SetM2VelocityPID(address, Kd, Kp, Ki, qpps);
 
-  //roboclaw.SpeedDistanceM1(address, 400, 9000, 1);
-  // roboclaw.SpeedDistanceM2(address, -400, 9000, 1);
+  // roboclaw.SpeedDistanceM1(address, 400, 9000, 1);
+  // roboclaw.SpeedDistanceM2(address, 400, 9000, 1);
 
   uint8_t depth1; //buffer 1 reading
   uint8_t depth2; //buffer 2 reading
