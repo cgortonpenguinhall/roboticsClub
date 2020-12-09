@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "RoboClaw.h"
 
-RoboClaw roboclaw(&Serial1,10000);
+RoboClaw roboclaw(&Serial1, 10000);
 
 #define address 0x80
 
@@ -14,80 +14,110 @@ RoboClaw roboclaw(&Serial1,10000);
 #define Kd 0.25
 #define qpps 44000
 
-void setup() {
+void turnLeft()
+{
+  Serial.println("turnLeft");
+  roboclaw.SpeedDistanceM2(address, -400, 990, 1);
+}
+
+void setup()
+{
   //Open Serial and roboclaw serial ports
   Serial.begin(115200);
   roboclaw.begin(38400);
-  
+
   //Set PID Coefficients
-  roboclaw.SetM1VelocityPID(address,Kd,Kp,Ki,qpps);
-  roboclaw.SetM2VelocityPID(address,Kd,Kp,Ki,qpps);  
+  roboclaw.SetM1VelocityPID(address, Kd, Kp, Ki, qpps);
+  roboclaw.SetM2VelocityPID(address, Kd, Kp, Ki, qpps);
+
+  //roboclaw.SpeedDistanceM1(address, 400, 9000, 1);
+  // roboclaw.SpeedDistanceM2(address, -400, 9000, 1);
+
+  uint8_t depth1; //buffer 1 reading
+  uint8_t depth2; //buffer 2 reading
+
+  while (depth1 != 0x80 && depth2 != 0x80)
+  { //wait for buffers to be empty
+    roboclaw.ReadBuffers(address, depth1, depth2);
+    delay(100);
+  } //end of waiting for drillhead position
+
+  turnLeft();
 }
 
 void displayspeed(void)
 {
-  uint8_t status1,status2,status3,status4;
-  bool valid1,valid2,valid3,valid4;
-  
-  int32_t enc1= roboclaw.ReadEncM1(address, &status1, &valid1);
+  uint8_t status1, status2, status3, status4;
+  bool valid1, valid2, valid3, valid4;
+
+  int32_t enc1 = roboclaw.ReadEncM1(address, &status1, &valid1);
   int32_t enc2 = roboclaw.ReadEncM2(address, &status2, &valid2);
   int32_t speed1 = roboclaw.ReadSpeedM1(address, &status3, &valid3);
   int32_t speed2 = roboclaw.ReadSpeedM2(address, &status4, &valid4);
   Serial.print("Encoder1:");
-  if(valid1){
-    Serial.print(enc1,HEX);
+  if (valid1)
+  {
+    Serial.print(enc1, HEX);
     Serial.print(" ");
-    Serial.print(status1,HEX);
+    Serial.print(status1, HEX);
     Serial.print(" ");
   }
-  else{
+  else
+  {
     Serial.print("invalid ");
   }
   Serial.print("Encoder2:");
-  if(valid2){
-    Serial.print(enc2,HEX);
+  if (valid2)
+  {
+    Serial.print(enc2, HEX);
     Serial.print(" ");
-    Serial.print(status2,HEX);
+    Serial.print(status2, HEX);
     Serial.print(" ");
   }
-  else{
+  else
+  {
     Serial.print("invalid ");
   }
   Serial.print("Speed1:");
-  if(valid3){
-    Serial.print(speed1,HEX);
+  if (valid3)
+  {
+    Serial.print(speed1, HEX);
     Serial.print(" ");
   }
-  else{
+  else
+  {
     Serial.print("invalid ");
   }
   Serial.print("Speed2:");
-  if(valid4){
-    Serial.print(speed2,HEX);
+  if (valid4)
+  {
+    Serial.print(speed2, HEX);
     Serial.print(" ");
   }
-  else{
+  else
+  {
     Serial.print("invalid ");
   }
   Serial.println();
 }
 
-void loop() {
-  roboclaw.SpeedM1(address,400);
-  roboclaw.SpeedM2(address,-400);
-  Serial.println("Forward");
-  delay(10000);
-  // for(uint8_t i = 0;i<400;i++){
-  //   //displayspeed();
-  //   delay(10);
-  // }
+void loop()
+{
+  // roboclaw.SpeedM1(address,400);
+  // roboclaw.SpeedM2(address,-400);
+  // Serial.println("Forward");
+  // delay(10000);
+  // // for(uint8_t i = 0;i<400;i++){
+  // //   //displayspeed();
+  // //   delay(10);
+  // // }
 
-  roboclaw.SpeedM1(address,-400);
-  roboclaw.SpeedM2(address,400);
-  Serial.println("Reverse");
-  // for(uint8_t i = 0;i<400;i++){
-  //   //displayspeed();
-  //   delay(10);
-  // }
-  delay(10000);
+  // roboclaw.SpeedM1(address,-400);
+  // roboclaw.SpeedM2(address,400);
+  // Serial.println("Reverse");
+  // // for(uint8_t i = 0;i<400;i++){
+  // //   //displayspeed();
+  // //   delay(10);
+  // // }
+  // delay(10000);
 }
