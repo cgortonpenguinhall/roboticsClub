@@ -32,8 +32,9 @@ void setup()
   roboclaw.SetM1VelocityPID(address, Kd, Kp, Ki, qpps);
   roboclaw.SetM2VelocityPID(address, Kd, Kp, Ki, qpps);
 
-  // roboclaw.SpeedDistanceM1(address, 400, 9000, 1);
-  // roboclaw.SpeedDistanceM2(address, 400, 9000, 1);
+  // let's put these things into 2 functions to abstract them!
+  roboclaw.SpeedDistanceM1(address, 400, 9000, 1);
+  roboclaw.SpeedDistanceM2(address, 400, 9000, 1);
 
   uint8_t depth1; //buffer 1 reading
   uint8_t depth2; //buffer 2 reading
