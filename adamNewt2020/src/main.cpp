@@ -6,10 +6,10 @@
 #include <Arduino.h>
 #include <RoboClaw.h>
 
-RoboClaw roboclaw(&Serial1, 10000);  // pins 18 (TX1) and 19 (RX1) are Serial1.
-                                     // Connect TX1 to S1(RX) and RX1 to S2(TX)
+RoboClaw roboclaw(&Serial1, 10000); // pins 18 (TX1) and 19 (RX1) are Serial1.
+                                    // Connect TX1 to S1(RX) and RX1 to S2(TX)
 
-#define address 0x80  // this is the first Roboclaw connected
+#define address 0x80 // this is the first Roboclaw connected
 
 // Velocity PID coefficients.
 #define Kp 1.0
@@ -17,10 +17,39 @@ RoboClaw roboclaw(&Serial1, 10000);  // pins 18 (TX1) and 19 (RX1) are Serial1.
 #define Kd 0.25
 #define qpps 44000
 
+void waitFinish()
+{
+  uint8_t depth1; //buffer 1 reading
+  uint8_t depth2; //buffer 2 reading
+
+  while (depth1 != 0x80 && depth2 != 0x80)
+  { //wait for buffers to be empty
+    roboclaw.ReadBuffers(address, depth1, depth2);
+    delay(100);
+  } //end of waiting for drillhead position
+}
+
 void turnLeft()
 {
   Serial.println("turnLeft");
-  roboclaw.SpeedDistanceM2(address, 400, 990, 1);
+  roboclaw.SpeedDistanceM2(address, 400, 993, 1);
+}
+
+void turnRight() 
+{
+  Serial.println("turnRight");
+  roboclaw.SpeedDistanceM1(address,400,993,1);
+}
+
+    void moveForward()
+{
+  roboclaw.SpeedDistanceM1M2(address, 10000, 9000, 10000, 9000, 1);
+}
+
+void driveCircle() 
+{
+  roboclaw.SpeedDistanceM1(address,400,2500,1);
+  roboclaw.SpeedDistanceM2(address, 1000, 2500,1);
 }
 
 void setup()
@@ -32,20 +61,14 @@ void setup()
   roboclaw.SetM1VelocityPID(address, Kd, Kp, Ki, qpps);
   roboclaw.SetM2VelocityPID(address, Kd, Kp, Ki, qpps);
 
-  // let's put these things into 2 functions to abstract them!
-  roboclaw.SpeedDistanceM1(address, 400, 9000, 1);
-  roboclaw.SpeedDistanceM2(address, 400, 9000, 1);
-
-  uint8_t depth1; //buffer 1 reading
-  uint8_t depth2; //buffer 2 reading
-
-  while (depth1 != 0x80 && depth2 != 0x80)
-  { //wait for buffers to be empty
-    roboclaw.ReadBuffers(address, depth1, depth2);
-    delay(100);
-  } //end of waiting for drillhead position
-
-  turnLeft();
+  // moveForward();
+  // waitFinish();
+  // delay(500);
+  // turnLeft();
+  // waitFinish();
+  // delay(500);
+  // turnRight();
+  driveCircle();
 }
 
 void displayspeed(void)
@@ -64,11 +87,14 @@ void displayspeed(void)
     Serial.print(" ");
     Serial.print(status1, HEX);
     Serial.print(" ");
-  } else {
+  }
+  else
+  {
     Serial.print("invalid ");
   }
   Serial.print("Encoder2:");
-  if (valid2) {
+  if (valid2)
+  {
     Serial.print(enc2, HEX);
     Serial.print(" ");
     Serial.print(status2, HEX);
@@ -103,21 +129,4 @@ void displayspeed(void)
 
 void loop()
 {
-  // roboclaw.SpeedM1(address,400);
-  // roboclaw.SpeedM2(address,-400);
-  // Serial.println("Forward");
-  // delay(10000);
-  // // for(uint8_t i = 0;i<400;i++){
-  // //   //displayspeed();
-  // //   delay(10);
-  // // }
-
-  // roboclaw.SpeedM1(address,-400);
-  // roboclaw.SpeedM2(address,400);
-  // Serial.println("Reverse");
-  // // for(uint8_t i = 0;i<400;i++){
-  // //   //displayspeed();
-  // //   delay(10);
-  // // }
-  // delay(10000);
 }
