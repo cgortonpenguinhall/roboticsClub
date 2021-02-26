@@ -41,9 +41,16 @@ void turnRight()
   roboclaw.SpeedDistanceM1(address,400,993,1);
 }
 
-    void moveForward()
+void moveForward()
 {
-  roboclaw.SpeedDistanceM1M2(address, 10000, 9000, 10000, 9000, 1);
+  roboclaw.SpeedDistanceM1M2(address, 500, 18000, 500, 18000, 1);
+}
+
+void moveForward2() {
+  roboclaw.SpeedAccelDistanceM1(address,2000,2000,1000,1);
+  roboclaw.SpeedAccelDistanceM2(address,2000,-2000,1000,1);
+  roboclaw.SpeedAccelDistanceM1(address,2000,0,0);  //distance traveled is v*v/2a = 12000*12000/2*12000 = 6000
+  roboclaw.SpeedAccelDistanceM2(address,2000,0,0);  //that makes the total move in ondirection 48000
 }
 
 void driveCircle() 
@@ -52,6 +59,7 @@ void driveCircle()
   roboclaw.SpeedDistanceM2(address, 1000, 2500,1);
 }
 
+// let's install a button for starting the code
 void setup()
 {
   Serial.begin(115200);
@@ -61,14 +69,14 @@ void setup()
   roboclaw.SetM1VelocityPID(address, Kd, Kp, Ki, qpps);
   roboclaw.SetM2VelocityPID(address, Kd, Kp, Ki, qpps);
 
-  // moveForward();
-  // waitFinish();
-  // delay(500);
-  // turnLeft();
+  moveForward();
+  waitFinish();
+  delay(500);
+  turnLeft();
   // waitFinish();
   // delay(500);
   // turnRight();
-  driveCircle();
+  // driveCircle();
 }
 
 void displayspeed(void)
